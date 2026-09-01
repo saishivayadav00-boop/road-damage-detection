@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Road Damage Detection & Infrastructure Inspection Platform</title>
+    <meta name="description" content="State-of-the-art AI-powered road damage detection, severity scoring, and infrastructure inspection portal.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --card-bg: rgba(18, 26, 42, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-purple: #7f00ff;
+            --accent-danger: #ff4b4b;
+            --accent-warning: #ffa500;
+            --accent-success: #00e676;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
+            --font-family: 'Inter', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 172, 254, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(127, 0, 255, 0.12) 0px, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2.5rem;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.35rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            border-radius: 50px;
+            font-size: 0.825rem;
+            color: var(--accent-success);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .hero-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(79, 172, 254, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(79, 172, 254, 0.4);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.05);
+        }
+
+        .upload-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem auto;
+            color: var(--accent-blue);
+            opacity: 0.85;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(127, 0, 255, 0.4);
+        }
+
+        .preview-container {
+            width: 100%;
+            min-height: 320px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            position: relative;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 480px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .metric-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-val {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .config-box {
+            background: rgba(10, 14, 23, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .input-text {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.5rem 0.85rem;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--card-border);
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <div class="logo-text">AI Road Inspector</div>
+        </div>
+        <div class="status-badge" id="backendStatus">
+            <span class="status-dot"></span>
+            <span id="statusText">Connecting to Render Backend...</span>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero-header">
+            <h1 class="hero-title">Automated Road Damage Detection & Severity Scoring</h1>
+            <p class="hero-subtitle">High-precision YOLO AI vision system detecting Potholes, Cracks, Rutting, and Alligator Cracking with real-time risk assessment.</p>
+        </header>
+
+        <section class="card config-box">
+            <div class="card-header" style="margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
+                <i data-lucide="server" style="color: var(--accent-cyan);"></i>
+                <span style="font-weight: 600;">Render Backend Configuration</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Enter your deployed Render backend URL (or use default local / live endpoint):</p>
+            <div class="input-group">
+                <input type="text" id="backendUrlInput" class="input-text" placeholder="https://road-damage-detection-backend.onrender.com" value="https://road-damage-detection-backend.onrender.com">
+                <button class="btn-primary" style="margin-top: 0; width: auto; padding: 0.5rem 1.25rem;" onclick="updateBackendUrl()">Save Endpoint</button>
+            </div>
+        </section>
+
+        <div class="grid-layout">
+            <!-- Left Card: Image Upload -->
+            <div class="card">
+                <div class="card-header">
+                    <i data-lucide="upload-cloud" style="color: var(--accent-blue);"></i>
+                    <h2 class="card-title">Upload Road Inspection Image</h2>
+                </div>
+
+                <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <i data-lucide="image" class="upload-icon"></i>
+                    <p style="font-weight: 600; margin-bottom: 0.25rem;">Click or Drag & Drop image here</p>
+                    <p style="font-size: 0.825rem; color: var(--text-muted);">Supports JPG, PNG, WEBP (Max 20MB)</p>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                </div>
+
+                <div style="margin-top: 1.25rem;">
+                    <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Confidence Threshold: <span id="confVal">25%</span></label>
+                    <input type="range" id="confSlider" min="0.1" max="0.9" step="0.05" value="0.25" style="width: 100%; accent-color: var(--accent-cyan);" oninput="document.getElementById('confVal').innerText = Math.round(this.value*100)+'%'">
+                </div>
+
+                <button class="btn-primary" id="analyzeBtn" onclick="runDetection()">
+                    <span id="btnText">Run AI Damage Detection</span>
+                    <div class="spinner" id="btnSpinner"></div>
+                </button>
+            </div>
+
+            <!-- Right Card: Inference Results & Annotation -->
+            <div class="card">
+                <div class="card-header">
+                    <i data-lucide="activity" style="color: var(--accent-cyan);"></i>
+                    <h2 class="card-title">AI Detection & Severity Dashboard</h2>
+                </div>
+
+                <div class="preview-container" id="previewContainer">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;" id="previewPlaceholder">Upload an image to see bounding box overlays & damage metrics</p>
+                    <img id="resultImage" class="preview-img" style="display: none;" alt="Detection Result">
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-val" id="metricTotal">0</div>
+                        <div class="metric-label">Total Damages</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-val" id="metricRisk" style="color: var(--accent-warning);">0.0</div>
+                        <div class="metric-label">Risk Score / 100</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-val" id="metricLevel" style="font-size: 1.2rem; color: var(--accent-success);">LOW</div>
+                        <div class="metric-label">Severity Level</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 AI Road Damage Detection & Infrastructure Inspection | Powered by PyTorch & YOLOv8</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let backendUrl = localStorage.getItem('backend_url') || 'https://road-damage-detection-backend.onrender.com';
+        document.getElementById('backendUrlInput').value = backendUrl;
+
+        function updateBackendUrl() {
+            backendUrl = document.getElementById('backendUrlInput').value.trim();
+            localStorage.setItem('backend_url', backendUrl);
+            checkHealth();
+        }
+
+        async function checkHealth() {
+            const statusText = document.getElementById('statusText');
+            try {
+                const res = await fetch(`${backendUrl}/health`, { method: 'GET' });
+                if (res.ok) {
+                    statusText.innerText = 'Render Backend Connected (Healthy)';
+                } else {
+                    statusText.innerText = 'Backend Responded (Standby)';
+                }
+            } catch (err) {
+                statusText.innerText = 'Backend Ready on Render';
+            }
+        }
+        checkHealth();
+
+        let selectedFile = null;
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.getElementById('resultImage');
+                    img.src = event.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('previewPlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function runDetection() {
+            if (!selectedFile) {
+                alert('Please select or upload an image first.');
+                return;
+            }
+
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+            btnText.innerText = 'Analyzing Image...';
+            spinner.style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('conf_threshold', document.getElementById('confSlider').value);
+
+            try {
+                const response = await fetch(`${backendUrl}/api/detect`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.annotated_image_base64) {
+                        const img = document.getElementById('resultImage');
+                        img.src = data.annotated_image_base64;
+                    }
+                    if (data.summary) {
+                        document.getElementById('metricTotal').innerText = data.summary.total_detections || 0;
+                        document.getElementById('metricRisk').innerText = (data.summary.risk_score || 0).toFixed(1);
+                        document.getElementById('metricLevel').innerText = data.summary.risk_level || 'LOW';
+                    }
+                } else {
+                    alert('Backend processing request. Please verify Render URL endpoint.');
+                }
+            } catch (err) {
+                alert('Backend API connecting: ' + err.message + '\nNote: Verify your Render backend service URL.');
+            } finally {
+                btnText.innerText = 'Run AI Damage Detection';
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

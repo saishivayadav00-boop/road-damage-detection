@@ -1,10 +1,14 @@
-streamlit
-ultralytics
-opencv-python
-torch
-torchvision
-numpy
-pandas
-pillow
-plotly
-reportlab
+streamlit>=1.30.0
+fastapi>=0.100.0
+uvicorn>=0.20.0
+python-multipart>=0.0.6
+ultralytics>=8.0.0
+opencv-python-headless>=4.8.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+pandas>=2.0.0
+pillow>=10.0.0
+plotly>=5.15.0
+reportlab>=4.0.0
