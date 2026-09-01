@@ -1,0 +1,13 @@
+# Exclude Python heavy backend modules from Vercel static build
+app.py
+modules/
+data/
+models/
+outputs/
+reports/
+uploads/
+scratch/
+yolov8n.pt
+*.pt
+*.pyc
+__pycache__/
