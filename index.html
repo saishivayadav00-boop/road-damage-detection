@@ -427,7 +427,8 @@
     <script>
         lucide.createIcons();
 
-        let backendUrl = localStorage.getItem('backend_url') || 'https://road-damage-detection-backend.onrender.com';
+        let backendUrl = localStorage.getItem('backend_url') || window.location.origin;
+        if (backendUrl.endsWith('/')) backendUrl = backendUrl.slice(0, -1);
         document.getElementById('backendUrlInput').value = backendUrl;
 
         function updateBackendUrl() {

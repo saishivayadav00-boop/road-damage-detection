@@ -12,7 +12,7 @@ from typing import Optional, Dict, Any, List
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from PIL import Image
 import pandas as pd
 import numpy as np
@@ -55,6 +55,8 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
+    if os.path.exists("index.html"):
+        return FileResponse("index.html")
     return {
         "status": "online",
         "service": "AI Road Damage Detection Backend",
